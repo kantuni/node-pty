@@ -20,7 +20,11 @@ jobs:
           - name: darwin
             os: macos-14
             arch: arm64
-            arch2: x64
+            arch2: none
+          - name: darwin
+            os: macos-13
+            arch: x64
+            arch2: none
           - name: linux
             os: ubuntu-latest
             arch: x64
