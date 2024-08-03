@@ -35,6 +35,9 @@ jobs:
           # Maybe use https://buildjet.com/for-github-actions/docs/about/pricing#arm?
           - name: linux
             arch: arm64
+          # We'll build this with x64. There is need for a separate job.
+          - name: win32
+            arch: arm64
 
     steps:
       - uses: actions/checkout@v4
@@ -46,6 +49,12 @@ jobs:
       # Build and run tests.
       - run: yarn install --frozen-lockfile
       - run: yarn test
+
+      # Build arm64 for Windows.
+      - run: npx node-gyp rebuild --arch=${{ matrix.arch }}
+        if: ${{ matrix.name == 'win32' && matrix.arch != 'arm64' }}
+      - run: node scripts/build-sub-package.js ${{ matrix.arch }}
+        if: ${{ matrix.name == 'win32' && matrix.arch != 'arm64' }}
 
       # Upload artifacts.
       - name: Upload node-pty-${{ matrix.name }}-${{ matrix.arch }}
